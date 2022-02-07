@@ -29,6 +29,14 @@ export class User extends Model {
         }
         return false
     }
+
+    newPassword(pass: string): boolean {
+        if (this.getDataValue('password')) {
+            return false
+        }
+        this.setDataValue('password', bcrypt.hashSync(pass, 10))
+        return true
+    }
     // @HasMany(() => Build)
     // builds: Build[]
 }
