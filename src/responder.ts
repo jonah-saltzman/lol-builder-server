@@ -1,6 +1,11 @@
 import { Response } from "express"
 import { ApiResponse, SignupResponse } from "./interfaces"
 
+interface Payload {
+	data?: SignupResponse
+	message?: string
+}
+
 export const respond = (res: Response, payload: ApiResponse): void => {
     if (payload.redirect) {
         res.redirect(payload.redirect)
@@ -12,11 +17,6 @@ export const respond = (res: Response, payload: ApiResponse): void => {
         return
     }
     res.json(new Res(payload))
-}
-
-interface Payload {
-    data?: SignupResponse
-    message?: string
 }
 
 const Res = function Res(this: Payload, payload: ApiResponse) {
