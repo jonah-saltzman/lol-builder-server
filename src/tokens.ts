@@ -1,8 +1,16 @@
-import { User } from "./db/models/User"
-import { Jwt, JwtPayload, verify, sign } from 'jsonwebtoken'
+import { findUserById, User } from "./db/models/User"
+import { verify, sign } from 'jsonwebtoken'
 import { UUID } from "./uuid"
 import { AuthSource, AuthType } from "./interfaces"
-import { UserToken } from "./db/models/UserToken"
+import { createToken, UserToken } from "./db/models/UserToken"
+import { Response, Request, NextFunction } from 'express'
+import { respond } from "./responder"
+import { findTokenByUuid } from './db/models/UserToken'
+
+
+declare module 'jsonwebtoken' {
+	export interface JwtPayload extends TokenContent{}
+}
 
 class Secret {
 	protected secret: string
@@ -26,12 +34,15 @@ export interface TokenContent {
 	expires: Date | null
 	auth: AuthType
     source: AuthSource
+    tokenId: string
 }
 
 export class Token {
     private _token: string
 	private _data: TokenContent
     private _registered: boolean
+    private _tokenId: string
+    userToken: UserToken
     user: User
 	constructor(user: User, source: AuthSource, type: AuthType) {
         const now = new Date()
@@ -42,33 +53,54 @@ export class Token {
             created: now,
             expires: expires,
             auth: type,
-            source
+            source,
+            tokenId: new UUID().toString()
         }
         this.user = user
         this._data = data
         this._token = sign(this._data, SECRET.string)
         this._registered = false
+        this._tokenId = data.tokenId
     }
     async register(): Promise<boolean> {
         if (this._registered) {
             return false
         }
         try {
-            const newToken = await UserToken.create({user: this.user, tokenString: this._token, valid: true, userId: this.user.id})
-            console.log(newToken)
-            this._registered = true
-            return true
+            const newToken = await createToken(this.user, this)
+            if (newToken) {
+                console.log('new token: ')
+                console.log(newToken)
+                this._registered = true
+                return true
+            } else {
+                return false
+            }
         } catch(e) {
             console.error(e)
             return false
         }
     }
-    public static validate(token: string) {
-        const decoded = verify(token, SECRET.string)
+    public static async validate(token: string): Promise<[User | null, UserToken | null]> {
+        const decoded = <TokenContent>verify(token, SECRET.string)
+        console.log('decoded token:')
         console.log(decoded)
+        if (decoded.expires && decoded.expires < new Date()) {
+            return [null, null]
+        }
+        try {
+            const userToken = await findTokenByUuid(decoded.tokenId)
+            const user = await findUserById(decoded.dbId)
+            return [user, userToken]
+        } catch {
+            return [null, null]
+        }
     }
     get string(): string {
         return this._token
+    }
+    get id(): string {
+        return this._tokenId
     }
 }
 
@@ -77,4 +109,24 @@ export class InvalidTokenError extends Error {
 		super(message || 'Invalid token')
 		Object.setPrototypeOf(this, InvalidTokenError.prototype)
 	}
+}
+
+export const requireToken = async(req: Request, res: Response, next: NextFunction) => {
+    const tokenString = req.header('JWT')
+    if (tokenString) {
+        const [user, token] = await Token.validate(tokenString)
+        if (user && token) {
+            if (!token.valid) {
+                return respond(res, {message: 'Invalid session', status: 401})
+            }
+            req.user = user
+            req.tokenId = token.tokenId
+            req.token = token
+            next()
+        } else {
+            return respond(res, {message: 'Invalid token', status: 401})
+        }
+    } else {
+        return respond(res, {message: 'Missing token', status: 401})
+    }
 }

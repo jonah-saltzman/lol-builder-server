@@ -6,16 +6,16 @@ interface Payload {
 	message?: string
 }
 
-export const respond = (res: Response, payload: ApiResponse): void => {
+export const respond = (res: Response, payload: ApiResponse | null): void => {
+    if (!payload || payload.status === 500) {
+        res.json({ message: 'Unknown server error' })
+		return
+    }
     if (payload.redirect) {
         res.redirect(payload.redirect)
         return
     }
     res.status(payload.status)
-    if (payload.status === 500) {
-        res.json({message: 'Unknown server error'})
-        return
-    }
     res.json(new Res(payload))
 }
 
