@@ -75,7 +75,7 @@ export const findUserById = async (id: number): Promise <User | null> => {
     }
 }
 
-export const newUser = async (email: string, password: string): Promise<User | null> => {
+export const newLocalUser = async (email: string, password: string): Promise<User | null> => {
     try {
         if (await findUserByEmail(email)) {
             return null

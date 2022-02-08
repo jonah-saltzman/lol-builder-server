@@ -1,5 +1,3 @@
-import { UUID } from "./uuid"
-
 export interface SignupResponse {
 	email: string
 }

@@ -69,9 +69,8 @@ export class Token {
         try {
             const newToken = await createToken(this.user, this)
             if (newToken) {
-                console.log('new token: ')
-                console.log(newToken)
                 this._registered = true
+                this.userToken = newToken
                 return true
             } else {
                 return false
@@ -83,8 +82,6 @@ export class Token {
     }
     public static async validate(token: string): Promise<[User | null, UserToken | null]> {
         const decoded = <TokenContent>verify(token, SECRET.string)
-        console.log('decoded token:')
-        console.log(decoded)
         if (decoded.expires && decoded.expires < new Date()) {
             return [null, null]
         }

@@ -1,15 +1,11 @@
 import express from 'express'
-import { findUserByEmail, newUser } from '../db/models/User'
-import { Op } from 'sequelize'
+import { findUserByEmail, newLocalUser } from '../db/models/User'
 import { respond } from '../responder'
 import { Token } from '../tokens'
-import { findTokenByUuid } from '../db/models/UserToken'
 
 const authRouter = express.Router()
 
 authRouter.get('/signout', async (req, res) => {
-    console.log('in signout:')
-    console.log(req.token)
     if (await req.token.invalidate()) {
         return respond(res, {message: `${req.user.email} signed out.`, status: 200})
     }
@@ -30,7 +26,7 @@ authRouter.post('/signup', async (req, res) => {
     if (user) {
         return respond(res, { message: 'Account exists', status: 409 })
     }
-    user = await newUser(req.email, req.password)
+    user = await newLocalUser(req.email, req.password)
     if (user) {
         return respond(res, {
 					message: 'Account created',
@@ -38,7 +34,7 @@ authRouter.post('/signup', async (req, res) => {
 					status: 201,
 				})
     }
-    return respond(res, { status: 500 })
+    return respond(res, null)
 })
 
 authRouter.post('/signin', async (req, res) => {

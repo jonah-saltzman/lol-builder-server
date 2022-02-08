@@ -5,8 +5,6 @@ import express, { Application, Request as Req, Response as Res } from 'express'
 import { Server } from 'socket.io'
 import mySQL from './db/config'
 import cors from 'cors'
-import path from 'path'
-import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import './custom.ts'
 
@@ -19,7 +17,9 @@ const app: Application = express()
 const server = http.createServer(app)
 export const io = new Server(server, { cors: { origin: '*' } })
 
-mySQL.sync({alter: true})
+mySQL.sync({alter: true}).then(seq => {
+    console.log('successfully synced mySQL db')
+})
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
