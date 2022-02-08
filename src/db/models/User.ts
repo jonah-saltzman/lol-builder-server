@@ -3,58 +3,62 @@ import bcrypt from 'bcrypt'
 import { UUID } from '../../uuid';
 import { UserToken } from "./UserToken";
 import { Op } from 'sequelize'
+import { Build } from "./Build";
 
 @Table
 export class User extends Model {
-    @Column
-    email: string
+	@Column
+	email: string
 
-    @Column
-    password: string
+	@Column
+	password: string
 
-    @CreatedAt
-    creationDate: Date
+	@CreatedAt
+	creationDate: Date
 
-    @UpdatedAt
-    updatedOn: Date
+	@UpdatedAt
+	updatedOn: Date
 
-    @DeletedAt
-    deletionDate: Date
+	@DeletedAt
+	deletionDate: Date
 
-    @Column(DataType.TEXT)
-    uuid: UUID
+	@Column(DataType.TEXT)
+	uuid: UUID
 
-    @HasMany(() => UserToken, 'userId')
-    tokens: UserToken[]
+	@HasMany(() => UserToken, 'userId')
+	tokens: UserToken[]
 
-    checkPassword(pass: string): boolean {
-        return bcrypt.compareSync(pass, this.getDataValue('password'))
-    }
+	@HasMany(() => Build, 'buildId')
+	builds: Build[]
 
-    changePassword(oldPass: string, newPass: string): boolean {
-        if (bcrypt.compareSync(oldPass, this.getDataValue('password'))) {
-            this.setDataValue('password', bcrypt.hashSync(newPass, 10))
-            return true
-        }
-        return false
-    }
+	checkPassword(pass: string): boolean {
+		return bcrypt.compareSync(pass, this.getDataValue('password'))
+	}
 
-    newPassword(pass: string): boolean {
-        if (this.getDataValue('password')) {
-            return false
-        }
-        this.setDataValue('password', bcrypt.hashSync(pass, 10))
-        return true
-    }
+	changePassword(oldPass: string, newPass: string): boolean {
+		if (bcrypt.compareSync(oldPass, this.getDataValue('password'))) {
+			this.setDataValue('password', bcrypt.hashSync(newPass, 10))
+			return true
+		}
+		return false
+	}
 
-    @BeforeSave({name: 'addUuidHook'})
-    static addUuidHook(user: User) {
-        if (!user.getDataValue('uuid')) {
-            user.setDataValue('uuid', new UUID().toString())
-        }
-    }
-    // @HasMany(() => Build)
-    // builds: Build[]
+	newPassword(pass: string): boolean {
+		if (this.getDataValue('password')) {
+			return false
+		}
+		this.setDataValue('password', bcrypt.hashSync(pass, 10))
+		return true
+	}
+
+	@BeforeSave({ name: 'addUuidHook' })
+	static addUuidHook(user: User) {
+		if (!user.getDataValue('uuid')) {
+			user.setDataValue('uuid', new UUID().toString())
+		}
+	}
+	// @HasMany(() => Build)
+	// builds: Build[]
 }
 
 export const findUserByEmail = async (email: string): Promise<User | null> => {
