@@ -17,7 +17,7 @@ const app: Application = express()
 const server = http.createServer(app)
 export const io = new Server(server, { cors: { origin: '*' } })
 
-mySQL.sync()
+mySQL.sync({alter: true})
 
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())

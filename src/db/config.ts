@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
 import { User } from "./models/User";
+import { UserToken } from "./models/UserToken";
 
 const dbName = process.env.RDS_NAME as string
 const dbUser = process.env.RDS_USER as string
@@ -8,7 +9,7 @@ const dbPass = process.env.RDS_PASSWORD
 
 
 
-const sequelize = new Sequelize(dbName, dbUser, dbPass, {host: dbHost, dialect: 'mysql', models: [User]})
+const sequelize = new Sequelize(dbName, dbUser, dbPass, {host: dbHost, dialect: 'mysql', models: [User, UserToken]})
 
 sequelize.afterInit(() => {
 	console.log('connected to mySQL')

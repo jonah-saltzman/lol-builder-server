@@ -1,8 +1,8 @@
 import { Response } from "express"
-import { ApiResponse, SignupResponse } from "./interfaces"
+import { ApiResponse, SignupResponse, TokenResponse } from "./interfaces"
 
 interface Payload {
-	data?: SignupResponse
+	data?: SignupResponse | TokenResponse
 	message?: string
 }
 
