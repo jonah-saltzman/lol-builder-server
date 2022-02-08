@@ -6,6 +6,7 @@ import { Token } from '../tokens'
 const authRouter = express.Router()
 
 authRouter.get('/signout', async (req, res) => {
+    console.log(req.token.userId)
     if (await req.token.invalidate()) {
         return respond(res, {message: `${req.user.email} signed out.`, status: 200})
     }
