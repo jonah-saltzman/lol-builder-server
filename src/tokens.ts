@@ -116,6 +116,9 @@ export const requireToken = async(req: Request, res: Response, next: NextFunctio
             if (!token.valid) {
                 return respond(res, {message: 'Invalid session', status: 401})
             }
+            if (token.userId !== user.id) {
+                return respond(res, { message: 'Token does not match user', status: 401 })
+            }
             req.user = user
             req.tokenId = token.tokenId
             req.token = token

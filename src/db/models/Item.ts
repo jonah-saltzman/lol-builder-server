@@ -7,17 +7,8 @@ import {
 	BelongsTo,
     PrimaryKey,
     HasMany,
+    HasOne,
 } from 'sequelize-typescript'
-
-type Stat = {
-    name: string
-    modifiers: Array<Modifier>
-}
-
-type Modifier = {
-    type: 'flat' | 'percent' | 'perLevel' | 'percentPerLevel' | 'percentBase' | 'percentBonus'
-    value: number
-}
 
 @Table
 export class Item extends Model {
@@ -40,6 +31,32 @@ export class Item extends Model {
 	@Column
 	totalGold: number
 
-	@Column
-	stats: string
+    @HasMany(() => ItemInto, {foreignKey: 'intoId'})
+    buildsInto: number
+
+    @Column
+    legendary: boolean
+
+    @Column
+    mythic: boolean
+}
+
+@Table({ updatedAt: false, createdAt: false })
+export class ItemInto extends Model {
+	@ForeignKey(() => Item)
+	@Column({ autoIncrement: false, primaryKey: true })
+	fromItem: number
+
+	@ForeignKey(() => Item)
+	@Column({ autoIncrement: false, primaryKey: true })
+	intoItem: number
+}
+
+export interface ItemProps {
+    itemId?: number,
+    name: string,
+    colloq: string,
+    plaintext: string,
+    baseGold: number,
+    totalGold: number
 }

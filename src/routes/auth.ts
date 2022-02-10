@@ -48,7 +48,11 @@ authRouter.post('/signin', async (req, res) => {
         }
         const token = new Token(user, 'web', 'local')
         await token.register()
-        return respond(res, {message: `${user.email} signed in.`, data: {token: token.string}, status: 200})
+        return respond(res, {
+					message: `${user.email} signed in.`,
+					data: { token: token.string },
+					status: 200,
+				})
     }
 })
 
