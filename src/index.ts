@@ -10,7 +10,7 @@ import './custom.ts'
 
 import authRoutes from './routes/auth'
 import { requireToken } from './tokens'
-import { needToUpdate } from './js/index.js'
+import { needToUpdate } from './updater'
 //import { SocketInit } from './socket.io'
 const PORT = parseInt(process.env.PORT || '6000') as number
 

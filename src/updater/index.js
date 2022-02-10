@@ -1,7 +1,7 @@
 const { S3 } = require('aws-sdk')
 const md5 = require('md5')
 const http = require('http')
-const { Item, ItemInto, ItemProps } = require('../db/models/Item')
+const { Item, ItemInto } = require('../db/models/Item')
 const { Stat, ItemStat } = require('../db/models/Stat')
 
 const CHAMP = new URL(
