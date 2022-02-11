@@ -10,7 +10,7 @@ import './custom.ts'
 
 import authRoutes from './routes/auth'
 import { requireToken } from './tokens'
-import ForgeDb from './updater' 
+import ForgeDb from './updater'
 //import { SocketInit } from './socket.io'
 const PORT = parseInt(process.env.PORT || '6000') as number
 
@@ -25,11 +25,7 @@ export const io = new Server(server, { cors: { origin: '*' } })
 
 mySQL.authenticate().then(() => {
     console.log('calling needtoupdate')
-    ForgeDb.updates.items().then(result => {
-        if (result) {
-            console.log(result)
-        }
-    })
+    ForgeDb.items().then(console.log)
 })
 
 app.use(bodyParser.urlencoded({extended: true}))

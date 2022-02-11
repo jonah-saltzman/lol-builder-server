@@ -160,7 +160,7 @@ const needToUpdate = async () => {
     }
 }
 
-const itemUpdater = async () => {
+const items = async () => {
     return new Promise((resolve, reject) => {
         needToUpdate()
             .then(str => resolve(str))
@@ -168,4 +168,4 @@ const itemUpdater = async () => {
     })
 }
 
-module.exports = { items = itemUpdater }
+module.exports = { items }
