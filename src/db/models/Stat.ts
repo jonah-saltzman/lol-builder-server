@@ -7,7 +7,7 @@ import {
 } from 'sequelize-typescript'
 import { Item } from './Item'
 
-@Table
+@Table({paranoid: false})
 export class Stat extends Model {
 	@PrimaryKey
 	@Column
@@ -20,7 +20,7 @@ export class Stat extends Model {
     alias: string
 }
 
-@Table({ updatedAt: false, createdAt: false })
+@Table({ updatedAt: false, createdAt: false, paranoid: false })
 export class ItemStat extends Model {
 	@ForeignKey(() => Stat)
 	@Column({ primaryKey: true })

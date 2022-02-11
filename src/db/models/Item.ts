@@ -10,7 +10,7 @@ import {
     HasOne,
 } from 'sequelize-typescript'
 
-@Table
+@Table({paranoid: false, updatedAt: false, createdAt: false})
 export class Item extends Model {
 	@PrimaryKey
 	@Column
@@ -39,9 +39,12 @@ export class Item extends Model {
 
     @Column
     mythic: boolean
+
+    @Column
+    icon: string
 }
 
-@Table({ updatedAt: false, createdAt: false })
+@Table({ updatedAt: false, createdAt: false, paranoid: false })
 export class ItemInto extends Model {
 	@ForeignKey(() => Item)
 	@Column({ autoIncrement: false, primaryKey: true })
