@@ -18,10 +18,10 @@ const app: Application = express()
 const server = http.createServer(app)
 export const io = new Server(server, { cors: { origin: '*' } })
 
-// mySQL.sync().then(seq => {
-//     console.log('successfully synced mySQL db')
+mySQL.sync().then(seq => {
+    console.log('successfully synced mySQL db')
     
-// })
+})
 
 mySQL.authenticate().then(() => {
     console.log('calling needtoupdate')

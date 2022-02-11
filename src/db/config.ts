@@ -11,7 +11,7 @@ const dbUser = process.env.RDS_USER as string
 const dbHost = process.env.RDS_HOST as string
 const dbPass = process.env.RDS_PASSWORD
 
-const sequelize = new Sequelize(dbName, dbUser, dbPass, {host: dbHost, dialect: 'mysql', models: [User, UserToken, Item, Build, ItemInto, Stat, ItemStat, Champ, ChampStat]})
+const sequelize = new Sequelize(dbName, dbUser, dbPass, {host: dbHost, dialect: 'mysql', models: [User, UserToken, Item, Build, ItemInto, Stat, ItemStat, Champ, ChampStat], logging: false})
 
 
 

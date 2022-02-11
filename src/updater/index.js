@@ -36,10 +36,13 @@ const needToUpdate = async () => {
                 s3.getObject({ Bucket: BUCKET, Key: 'champD5.txt' }).promise(),
             ])
         const [itemDbV, champDbV] = [itemProm.Body?.toString('utf-8').trim(), champProm.Body?.toString('utf-8').trim()]
+        console.log('-----------Item MD5s------------ -----------Champ MD5s-----------')
         console.log(itemDbV, champDbV)
         console.log(itemD5, champD5)
-        let [itemResult, champResult] = [true, true]
+        let [itemResult, champResult] = [false, false]
+        let [needUpdateItems, needUpdateChamps] = [false, false]
         if (itemDbV !== itemD5) {
+            needUpdateItems = true
             console.log('item md5s didnt match, updating items')
             const parsedItems = JSON.parse(itemData)
             itemResult = await updateItems(parsedItems)
@@ -52,6 +55,7 @@ const needToUpdate = async () => {
             }
         }
         if (champDbV !== champD5) {
+            needUpdateChamps = true
             console.log('champ md5s didnt match, updating champs')
             const parsedChamps = JSON.parse(champData)
             champResult = await updateChamps(parsedChamps)
@@ -74,8 +78,6 @@ const updater = () => {
     return new Promise((resolve, reject) => {
         needToUpdate()
             .then(arr => {
-                console.log('results:')
-                console.log(arr)
                 if (!arr[0] || !arr[1]) {
                     reject(`Updated items: ${arr[0]}\nUpdated champs: ${arr[1]}`)
                     return

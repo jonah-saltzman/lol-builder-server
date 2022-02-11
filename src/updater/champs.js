@@ -20,8 +20,6 @@ const updateChamps = async (parsed) => {
             })
             builtChamps.push(dbItem)
             for (const [type, mod] of Object.entries(champ.stats)) {
-                console.log('adding stat: ', type)
-                console.log('to champ: ', dbItem.champName)
                 const stat = stats.find((stat) => {
                     if (stat.statName === type) {
                         return true
@@ -48,7 +46,6 @@ const updateChamps = async (parsed) => {
         }
         await Promise.all(builtChamps.map(champ => champ.save()))
         await Promise.all(builtChampStats.map(stat => stat.save()))
-        console.log('AFTER PROMISES')
         return true
     } catch(e) {
         console.error(e)
