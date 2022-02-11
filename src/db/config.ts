@@ -13,7 +13,16 @@ const dbHost = process.env.RDS_HOST as string
 const dbPass = process.env.RDS_PASSWORD
 
 const sequelize = new Sequelize(dbName, dbUser, dbPass, {host: dbHost, dialect: 'mysql', models: [User, UserToken, Item, Build, ItemInto, Stat, ItemStat, Champ, ChampStat], logging: false})
-export const cache = new NodeCache({useClones: true, checkperiod: 0, stdTTL: 0})
-
+export const openCache = new NodeCache({useClones: true, checkperiod: 0, stdTTL: 0})
+export const itemCache = new NodeCache({
+	useClones: true,
+	checkperiod: 0,
+	stdTTL: 0,
+})
+export const champCache = new NodeCache({
+	useClones: true,
+	checkperiod: 0,
+	stdTTL: 0,
+})
 
 export default sequelize

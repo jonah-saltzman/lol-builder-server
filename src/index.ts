@@ -3,7 +3,7 @@ config()
 import http from 'http'
 import express, { Application, Request as Req, Response as Res } from 'express'
 import { Server } from 'socket.io'
-import mySQL, { cache } from './db/config'
+import mySQL, { openCache } from './db/config'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import './custom.ts'
@@ -32,9 +32,9 @@ interface AllItems {
 }
 
 app.get('/items', (req, res) => {
-    if (cache.has('allItems')) {
+    if (openCache.has('allItems')) {
         console.log('items in cache')
-        res.json(cache.get('allItems'))
+        res.json(openCache.get('allItems'))
     } else {
         Item.findAll({raw: true}).then(items => {
             console.log('items not in cache')
@@ -44,9 +44,9 @@ app.get('/items', (req, res) => {
 })
 
 app.get('/champs', (req, res) => {
-    if (cache.has('allChamps')) {
+    if (openCache.has('allChamps')) {
         console.log('champs in cache')
-        res.json(cache.get('allChamps'))
+        res.json(openCache.get('allChamps'))
     } else {
         Champ.findAll({ raw: true }).then((champs) => {
             console.log('champs not in cache')
@@ -66,13 +66,13 @@ mySQL.sync().then((seq) => {
 	Updater().then((res) => {
         console.log(res)
         Item.findAll({raw: true}).then(items => {
-            cache.set('allItems', items)
+            openCache.set('allItems', items)
         })
         Champ.findAll({raw: true}).then(champs => {
-            cache.set('allChamps', champs)
+            openCache.set('allChamps', champs)
         })
         Stat.findAll({raw: true}).then(stats => {
-            cache.set('stats', stats)
+            openCache.set('stats', stats)
         })
     })
     .catch(console.log)

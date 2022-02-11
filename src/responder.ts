@@ -1,13 +1,9 @@
 import { Response } from "express"
 import { ApiResponse } from "./interfaces"
 
-// interface Payload {
-// 	data?: SignupResponse | TokenResponse
-// 	message?: string
-// }
-
 export const respond = (res: Response, payload: ApiResponse | null): void => {
     if (!payload || payload.status === 500) {
+        res.status(500)
         res.json({ message: 'Unknown server error' })
 		return
     }

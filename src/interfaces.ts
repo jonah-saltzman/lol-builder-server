@@ -1,6 +1,6 @@
 import { Build } from "./db/models/Build"
 import { ItemStat } from "./db/models/Stat"
-import { cache } from "./db/config"
+import { openCache } from "./db/config"
 import { Stat } from "./db/models/Stat"
 import { Item } from "./dal/items"
 
@@ -97,7 +97,7 @@ export class ItemStats {
     tenacity: Mods
     armorPen: Mods
     constructor(stats: ItemStat[]) {
-        const allStats: Array<Stat> | undefined = cache.get('stats')
+        const allStats: Array<Stat> | undefined = openCache.get('stats')
         if (!allStats) {
             throw new Error('couldnt get stats')
         }
