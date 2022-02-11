@@ -14,6 +14,8 @@ import Updater from './updater'
 import { Item } from './db/models/Item'
 import { Champ } from './db/models/Champ'
 import buildRouter from './routes/builds'
+import { Stat } from './db/models/Stat'
+import itemRouter from './routes/items'
 //import { SocketInit } from './socket.io'
 const PORT = parseInt(process.env.PORT || '6000') as number
 
@@ -57,6 +59,7 @@ app.use('/auth', authRoutes)
 app.use(requireToken)
 app.get('/signout', authRoutes)
 app.use('/', buildRouter)
+app.use('/item', itemRouter)
 
 mySQL.sync().then((seq) => {
 	console.log('successfully synced mySQL db')
@@ -67,6 +70,9 @@ mySQL.sync().then((seq) => {
         })
         Champ.findAll({raw: true}).then(champs => {
             cache.set('allChamps', champs)
+        })
+        Stat.findAll({raw: true}).then(stats => {
+            cache.set('stats', stats)
         })
     })
     .catch(console.log)

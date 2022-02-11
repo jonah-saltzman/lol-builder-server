@@ -31,7 +31,7 @@ export class Item extends Model {
 	@Column
 	totalGold: number
 
-    @HasMany(() => ItemInto, {foreignKey: 'intoId'})
+    @HasMany(() => ItemInto, {foreignKey: 'fromItem'})
     buildsInto: number
 
     @Column
