@@ -1,3 +1,5 @@
+import { Build } from "./db/models/Build"
+
 export interface SignupResponse {
 	email: string
 }
@@ -9,7 +11,7 @@ export interface TokenResponse {
 export interface ApiResponse {
 	status: number
 	message?: string
-	data?: SignupResponse | TokenResponse
+	data?: SignupResponse | TokenResponse | Build[]
 	redirect?: string
 }
 

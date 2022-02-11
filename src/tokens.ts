@@ -1,11 +1,12 @@
-import { findUserById, User } from "./db/models/User"
+import { User } from "./db/models/User"
 import { verify, sign } from 'jsonwebtoken'
 import { UUID } from "./uuid"
 import { AuthSource, AuthType } from "./interfaces"
-import { createToken, UserToken } from "./db/models/UserToken"
+import { UserToken } from "./db/models/UserToken"
 import { Response, Request, NextFunction } from 'express'
 import { respond } from "./responder"
-import { findTokenByUuid } from './db/models/UserToken'
+import { createToken, findTokenByUuid } from './dal/auth'
+import { findUserById } from './dal/users'
 
 
 declare module 'jsonwebtoken' {

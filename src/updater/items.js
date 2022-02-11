@@ -33,6 +33,7 @@ const updateItems = async (parsedItems) => {
                 totalGold: item.shop.prices.total,
                 legendary: isLegendary,
                 mythic: isMythic,
+                icon: item.icon
             })
             builtItems.push(dbItem)
             for (const into of buildInto) {

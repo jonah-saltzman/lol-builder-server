@@ -1,10 +1,10 @@
 import { Response } from "express"
-import { ApiResponse, SignupResponse, TokenResponse } from "./interfaces"
+import { ApiResponse } from "./interfaces"
 
-interface Payload {
-	data?: SignupResponse | TokenResponse
-	message?: string
-}
+// interface Payload {
+// 	data?: SignupResponse | TokenResponse
+// 	message?: string
+// }
 
 export const respond = (res: Response, payload: ApiResponse | null): void => {
     if (!payload || payload.status === 500) {
@@ -19,7 +19,7 @@ export const respond = (res: Response, payload: ApiResponse | null): void => {
     res.json(new Res(payload))
 }
 
-const Res = function Res(this: Payload, payload: ApiResponse) {
+const Res = function Res(this: ApiResponse, payload: ApiResponse) {
     if (payload.message) {
         this.message = payload.message
     }
@@ -27,4 +27,4 @@ const Res = function Res(this: Payload, payload: ApiResponse) {
         this.data = payload.data
     }
     return this
-} as any as { new (res: Payload): Payload}
+} as any as { new (res: ApiResponse): ApiResponse}

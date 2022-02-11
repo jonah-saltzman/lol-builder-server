@@ -4,6 +4,10 @@ const http = require('http')
 const updateItems = require('./items')
 const updateChamps = require('./champs')
 
+const UPDATER_ON = false
+
+const FORCE_UPDATE = false
+
 const CHAMP = new URL(
 	'http://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/champions.json'
 )
@@ -41,7 +45,7 @@ const needToUpdate = async () => {
         console.log(itemD5, champD5)
         let [itemResult, champResult] = [false, false]
         let [needUpdateItems, needUpdateChamps] = [false, false]
-        if (itemDbV !== itemD5) {
+        if (itemDbV !== itemD5 || FORCE_UPDATE) {
             needUpdateItems = true
             console.log('item md5s didnt match, updating items')
             const parsedItems = JSON.parse(itemData)
@@ -54,7 +58,7 @@ const needToUpdate = async () => {
                 throw new Error('Failed to update items')
             }
         }
-        if (champDbV !== champD5) {
+        if (champDbV !== champD5 || FORCE_UPDATE) {
             needUpdateChamps = true
             console.log('champ md5s didnt match, updating champs')
             const parsedChamps = JSON.parse(champData)
@@ -75,6 +79,9 @@ const needToUpdate = async () => {
 }
 
 const updater = () => {
+    if (!UPDATER_ON) {
+        return Promise.resolve('Skipping update')
+    }
     return new Promise((resolve, reject) => {
         needToUpdate()
             .then(arr => {
