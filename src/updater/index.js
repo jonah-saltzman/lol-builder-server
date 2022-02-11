@@ -154,10 +154,18 @@ const needToUpdate = async () => {
         await s3
 					.putObject({ Bucket: BUCKET, Key: 'itemD5.txt', Body: itemD5 })
 					.promise()
-        console.log('updated all items')
+        return 'updated all items'
     } else {
-        console.log('item MD5 matches, not updating')
+        return 'item MD5 matches, not updating'
     }
 }
 
-module.exports = {needToUpdate}
+const itemUpdater = async () => {
+    return new Promise((resolve, reject) => {
+        needToUpdate()
+            .then(str => resolve(str))
+            .catch(() => reject('Unknown update error'))
+    })
+}
+
+module.exports = { items = itemUpdater }

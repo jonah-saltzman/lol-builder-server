@@ -1,1 +1,3 @@
-export function needToUpdate(): void
+export namespace updates {
+    declare function items(): Promise<boolean>
+}
