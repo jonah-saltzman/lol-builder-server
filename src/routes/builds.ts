@@ -13,7 +13,6 @@ buildRouter.get('/', async (req, res) => {
 })
 
 buildRouter.post('/new', async (req, res) => {
-    console.log(req.body)
     const champId: number = req.body.champId
     const buildName: string = req.body.buildName ?? null
     const itemIds: number[] = req.body.items ?? []
@@ -29,7 +28,6 @@ buildRouter.post('/new', async (req, res) => {
                 const items = (await Promise.all(itemIds.map(id => Item.find(id)))).filter(itemFilter)
                 const newBuild = await Build.create({items, champ, user: req.user, name: buildName})
                 if (newBuild) {
-                    //console.log(newBuild)
                     respond(res, {data: [newBuild], status: 200})
                     return
                 } else {

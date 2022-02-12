@@ -2,7 +2,6 @@ import { AutoIncrement, BeforeSave, Column, CreatedAt, DataType, DeletedAt, HasM
 import bcrypt from 'bcrypt'
 import { UUID } from '../../uuid';
 import { UserToken } from "./UserToken";
-import { Op } from 'sequelize'
 import { Build } from "./Build";
 
 @Table
@@ -62,6 +61,4 @@ export class User extends Model {
 			user.setDataValue('uuid', new UUID().toString())
 		}
 	}
-	// @HasMany(() => Build)
-	// builds: Build[]
 }

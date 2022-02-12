@@ -6,7 +6,6 @@ import { itemCache } from '../db/config'
 const itemRouter = express.Router()
 
 itemRouter.get('/:itemId', async (req, res) => {
-    console.log(req.params.itemId)
     const cacheitem = itemCache.get<Item>(req.params.itemId)
     if (cacheitem) {
         respond(res, { data: [cacheitem], status: 200 })

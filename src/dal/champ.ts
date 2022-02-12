@@ -1,5 +1,4 @@
 import { Champ as dbChamp, ChampStat } from "../db/models/Champ";
-import { ChampStat as dbStat } from "../db/models/Champ";
 import { Stats } from "../interfaces";
 
 export class Champ extends Stats {

@@ -7,7 +7,6 @@ import {
     BelongsTo
 } from 'sequelize-typescript'
 import { User } from './User'
-import { Token } from '../../tokens'
 
 @Table
 export class UserToken extends Model {

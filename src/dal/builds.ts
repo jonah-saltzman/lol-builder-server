@@ -39,7 +39,7 @@ export class Build {
         this.dbObj = build.dbObj
         this.name = build.name
     }
-    public static async fromId (buildId: number, user: User): Promise<Build | null> {
+    public static async fromId(buildId: number, user: User): Promise<Build | null> {
         const build = await dbBuild.findByPk(buildId)
         if (build) {
             const items: Item[] = []
@@ -49,7 +49,6 @@ export class Build {
             })
             const champ = await Champ.find(build.champion)
             if (!champ) return null
-            console.log('found build from ID: ', build.name)
             return new this({user, champ, items, dbObj: build, name: build.name})
         } else {
             return null
@@ -67,11 +66,7 @@ export class Build {
 					Item6: (build.items ? build.items[5]?.id : null) ?? null,
                     name: build.name
 				}
-        console.log('saving into DB:')
-        console.log(newBuild)
         const dbObj = await dbBuild.create(newBuild)
-        console.log('saved DB object:')
-        console.log(dbObj)
         const params: NewBuild = {
             user: build.user,
             champ: build.champ,

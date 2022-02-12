@@ -1,13 +1,11 @@
 import {
 	Column,
-	DataType,
 	Model,
 	Table,
 	ForeignKey,
 	BelongsTo,
 	PrimaryKey,
 	HasMany,
-	HasOne,
 } from 'sequelize-typescript'
 
 import { Stat } from './Stat'

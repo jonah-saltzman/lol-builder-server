@@ -1,13 +1,10 @@
 import {
 	Column,
-	DataType,
 	Model,
 	Table,
 	ForeignKey,
-	BelongsTo,
     PrimaryKey,
     HasMany,
-    HasOne,
 } from 'sequelize-typescript'
 
 @Table({paranoid: false, updatedAt: false, createdAt: false})
