@@ -3,10 +3,11 @@ const md5 = require('md5')
 const http = require('http')
 const updateItems = require('./items')
 const updateChamps = require('./champs')
+const { argv } = require('process')
 
-const UPDATER_ON = false
+const UPDATER_ON = process.argv[2] !== '-S' ?? true
 
-const FORCE_UPDATE = false
+const FORCE_UPDATE = process.argv[2] === '-F' ?? false
 
 const CHAMP = new URL(
 	'http://cdn.merakianalytics.com/riot/lol/resources/latest/en-US/champions.json'

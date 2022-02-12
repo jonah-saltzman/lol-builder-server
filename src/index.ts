@@ -23,7 +23,7 @@ const app: Application = express()
 const server = http.createServer(app)
 export const io = new Server(server, { cors: { origin: '*' } })
 
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors())
 
@@ -32,27 +32,27 @@ interface AllItems {
 }
 
 app.get('/items', (req, res) => {
-    if (openCache.has('allItems')) {
-        console.log('items in cache')
-        res.json(openCache.get('allItems'))
-    } else {
-        Item.findAll({raw: true}).then(items => {
-            console.log('items not in cache')
-            res.json(items)
-        })
-    }
+	if (openCache.has('allItems')) {
+		console.log('items in cache')
+		res.json(openCache.get('allItems'))
+	} else {
+		Item.findAll({ raw: true }).then((items) => {
+			console.log('items not in cache')
+			res.json(items)
+		})
+	}
 })
 
 app.get('/champs', (req, res) => {
-    if (openCache.has('allChamps')) {
-        console.log('champs in cache')
-        res.json(openCache.get('allChamps'))
-    } else {
-        Champ.findAll({ raw: true }).then((champs) => {
-            console.log('champs not in cache')
-            res.json(champs)
-        })
-    }
+	if (openCache.has('allChamps')) {
+		console.log('champs in cache')
+		res.json(openCache.get('allChamps'))
+	} else {
+		Champ.findAll({ raw: true }).then((champs) => {
+			console.log('champs not in cache')
+			res.json(champs)
+		})
+	}
 })
 
 app.use('/auth', authRoutes)
@@ -61,23 +61,27 @@ app.get('/signout', authRoutes)
 app.use('/', buildRouter)
 app.use('/item', itemRouter)
 
-mySQL.sync().then((seq) => {
-	console.log('successfully synced mySQL db')
-	Updater().then((res) => {
-        console.log(res)
-        Item.findAll({raw: true}).then(items => {
-            openCache.set('allItems', items)
-        })
-        Champ.findAll({raw: true}).then(champs => {
-            openCache.set('allChamps', champs)
-        })
-        Stat.findAll({raw: true}).then(stats => {
-            openCache.set('stats', stats)
-        })
-    })
-    .catch(console.log)
-}).then(() => {
-    server.listen(PORT, () => {
-        console.log('Listening on port ', PORT)
-    })
-})
+mySQL
+	.sync()
+	.then((seq) => {
+		console.log('successfully synced mySQL db')
+		Updater()
+			.then((res) => {
+				console.log(res)
+				Item.findAll({ raw: true }).then((items) => {
+					openCache.set('allItems', items)
+				})
+				Champ.findAll({ raw: true }).then((champs) => {
+					openCache.set('allChamps', champs)
+				})
+				Stat.findAll({ raw: true }).then((stats) => {
+					openCache.set('stats', stats)
+				})
+			})
+			.catch(console.log)
+	})
+	.then(() => {
+		server.listen(PORT, () => {
+			console.log('Listening on port ', PORT)
+		})
+	})

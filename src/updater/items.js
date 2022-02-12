@@ -26,7 +26,7 @@ const updateItems = async (parsedItems) => {
                 !buildFrom.some((from) => from === 1001)
             const dbItem = Item.build({
                 itemId: item.id,
-                name: item.name,
+                itemName: item.name,
                 colloq: item.nicknames.join(';'),
                 plaintext: item.simpleDescription,
                 baseGold: 0,

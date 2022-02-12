@@ -1,5 +1,6 @@
 import { Champ as dbChamp, ChampStat } from "../db/models/Champ";
 import { Stats } from "../interfaces";
+import { champCache } from "../db/config";
 
 export class Champ extends Stats {
 	id: number
@@ -21,6 +22,12 @@ export class Champ extends Stats {
 	public static async find(id: string): Promise<Champ | null>
 	public static async find(id: number): Promise<Champ | null>
 	public static async find(id: string | number): Promise<Champ | null> {
+        if (typeof id === 'number') {
+            const cachedChamp: Champ | null | undefined = champCache.get(id)
+            if (cachedChamp) {
+                return cachedChamp
+            }
+        }
 		const champ =
 			typeof id === 'string'
 				? await dbChamp.findOne({ where: { name: id } })
@@ -29,7 +36,9 @@ export class Champ extends Stats {
 			return null
 		} else {
 			const dbStats = await ChampStat.findAll({ where: { champId: champ.champId } })
-			return new this(champ.champName, champ.champId, dbStats, champ)
+            const newChamp = new this(champ.champName, champ.champId, dbStats, champ)
+			champCache.set(newChamp.id, newChamp)
+            return newChamp
 		}
 	}
 }

@@ -14,7 +14,7 @@ export class Item extends Model {
 	itemId: number
 
 	@Column
-	name: string
+	itemName: string
 
 	@Column
 	colloq: string

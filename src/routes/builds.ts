@@ -8,7 +8,7 @@ import { Build } from '../dal/builds'
 const buildRouter = express.Router()
 
 buildRouter.get('/', async (req, res) => {
-    const builds = (await findBuilds(req.user, { raw: true })).filter((build): build is Build => !!build)
+    const builds = await findBuilds(req.user.id, { raw: true })
     respond(res, {data: builds, status: builds.length === 0 ? 404 : 200})
 })
 
@@ -26,7 +26,7 @@ buildRouter.post('/new', async (req, res) => {
         } else {
             try {
                 const items = (await Promise.all(itemIds.map(id => Item.find(id)))).filter(itemFilter)
-                const newBuild = await Build.create({items, champ, user: req.user, name: buildName})
+                const newBuild = await Build.create({items, champ, user: req.user.id, name: buildName})
                 if (newBuild) {
                     respond(res, {data: [newBuild], status: 200})
                     return
@@ -38,6 +38,57 @@ buildRouter.post('/new', async (req, res) => {
                 console.error(e)
                 respond(res, null)
             }
+        }
+    }
+})
+
+buildRouter.patch('/:buildId', async (req, res) => {
+    try {
+        if (!req.params.buildId || req.params.buildId.length === 0) throw 400
+        const champId: number = req.body.champId
+        const itemIds: number[] = req.body.items
+        if (!champId || !itemIds) throw 400
+        const buildName: string = req.body.buildName ?? null
+        const build = await Build.fromId(parseInt(req.params.buildId))
+        const champ = await Champ.find(champId)
+        const items = (await Promise.all(itemIds.map(id => Item.find(id)))).filter(itemFilter)
+        console.log(`build ${req.params.buildId} belongs to user ${build?.user}`)
+        console.log(`the authenticated user is ${req.user.id}`)
+        if (!build || !champ || items.length !== itemIds.length) throw 500
+        if (build.user !== req.user.id) throw 401
+        build.name = buildName
+        build.champ = champ
+        build.items = items
+        if (await build.update()) {
+            respond(res, {status: 200, data: [build]})
+        } else {
+            throw 500
+        }
+    } catch (status) {
+        if (typeof status === 'number') {
+            respond(res, { status })
+        } else {
+            respond(res, null)
+        }
+    }
+})
+
+buildRouter.delete('/:buildId', async (req, res) => {
+    try {
+        if (!req.params.buildId || req.params.buildId.length === 0) throw 400
+        const build = await Build.fromId(parseInt(req.params.buildId))
+        if (!build) throw 404
+        if (build.user !== req.user.id) throw 401
+        if (await build.destroy()) {
+            respond(res, {status: 200})
+        } else {
+            throw 500
+        }
+    } catch(status) {
+        if (typeof status === 'number') {
+            respond(res, {status})
+        } else {
+            respond(res, null)
         }
     }
 })

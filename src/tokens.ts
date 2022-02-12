@@ -82,14 +82,18 @@ export class Token {
         }
     }
     public static async validate(token: string): Promise<[User | null, UserToken | null]> {
-        const decoded = <TokenContent>verify(token, SECRET.string)
-        if (decoded.expires && decoded.expires < new Date()) {
-            return [null, null]
-        }
         try {
-            const userToken = await findTokenByUuid(decoded.tokenId)
-            const user = await findUserById(decoded.dbId)
-            return [user, userToken]
+            const decoded = <TokenContent>verify(token, SECRET.string)
+            if (decoded.expires && decoded.expires < new Date()) {
+                return [null, null]
+            }
+            try {
+                const userToken = await findTokenByUuid(decoded.tokenId)
+                const user = await findUserById(decoded.dbId)
+                return [user, userToken]
+            } catch {
+                return [null, null]
+            }
         } catch {
             return [null, null]
         }

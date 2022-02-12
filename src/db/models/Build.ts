@@ -7,6 +7,7 @@ import {
 	PrimaryKey,
     AutoIncrement,
 } from 'sequelize-typescript'
+import { Item } from './Item'
 import { User } from './User'
 
 @Table
@@ -24,37 +25,25 @@ export class Build extends Model {
 	userId: number
 
 	@Column
-	champion: number
+	champId: number
 
 	@Column
-	Item1: number
+	buildName: string
+}
 
-	@Column
-	Item2: number
+@Table({ updatedAt: false, createdAt: false, paranoid: false, deletedAt: false })
+export class ItemInBuild extends Model {
+	@ForeignKey(() => Build)
+	@Column({ autoIncrement: false, primaryKey: true })
+	buildId: number
 
-	@Column
-	Item3: number
+	@ForeignKey(() => Item)
+	@Column({ autoIncrement: false, primaryKey: true })
+	itemId: number
 
-	@Column
-	Item4: number
+    @Column
+    position: number
 
-	@Column
-	Item5: number
-
-	@Column
-	Item6: number
-
-	@Column
-	name: string
-
-	allItems(): number[] {
-		return [
-			this.Item1,
-			this.Item2,
-			this.Item3,
-			this.Item4,
-			this.Item5,
-			this.Item6,
-		]
-	}
+    @Column
+    isPath: boolean
 }
