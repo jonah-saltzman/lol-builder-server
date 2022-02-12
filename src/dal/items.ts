@@ -1,9 +1,8 @@
 import { Item as dbItem, ItemInto } from "../db/models/Item";
 import { ItemStat } from "../db/models/Stat";
-import { ItemStats } from '../interfaces'
+import { Stats } from '../interfaces'
 
-export class Item extends ItemStats {
-	stats: ItemStats
+export class Item extends Stats {
 	id: number
 	name: string
     from: number[]
@@ -33,4 +32,8 @@ export class Item extends ItemStats {
             return new this(item.name, item.itemId, dbStats, from, into, item)
         }
 	}
+}
+
+export const itemFilter = (item: Item | null): item is Item => {
+    return !!item
 }

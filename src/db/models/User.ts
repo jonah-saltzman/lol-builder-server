@@ -1,4 +1,4 @@
-import { BeforeSave, Column, CreatedAt, DataType, DeletedAt, HasMany, Model, Table, UpdatedAt } from "sequelize-typescript";
+import { AutoIncrement, BeforeSave, Column, CreatedAt, DataType, DeletedAt, HasMany, Model, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
 import bcrypt from 'bcrypt'
 import { UUID } from '../../uuid';
 import { UserToken } from "./UserToken";
@@ -7,6 +7,11 @@ import { Build } from "./Build";
 
 @Table
 export class User extends Model {
+	@PrimaryKey
+	@AutoIncrement
+	@Column
+	id: number
+
 	@Column
 	email: string
 

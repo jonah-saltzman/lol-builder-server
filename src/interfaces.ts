@@ -1,8 +1,9 @@
-import { Build } from "./db/models/Build"
+import { Build } from "./dal/builds"
 import { ItemStat } from "./db/models/Stat"
 import { openCache } from "./db/config"
 import { Stat } from "./db/models/Stat"
 import { Item } from "./dal/items"
+import { ChampStat } from "./db/models/Champ"
 
 export interface SignupResponse {
 	email: string
@@ -28,8 +29,6 @@ export enum Modifiers {
 	PERCENT = 'percent',
 	perLevel = 'perLevel',
 	PPL = 'percentPerLevel',
-	pBase = 'percentBase',
-	pBonus = 'percentBonus',
 }
 
 type Mods = {[key in Modifiers]: number}
@@ -57,7 +56,7 @@ enum statName {
     armorPen = 'armorPenetration'
 }
 
-export class ItemStats {
+export class Stats {
     public static _AP = 'abilityPower'
     public static _armor = 'armor'
     public static _armorPen = 'armorPenetration'
@@ -96,7 +95,8 @@ export class ItemStats {
     OV: Mods
     tenacity: Mods
     armorPen: Mods
-    constructor(stats: ItemStat[]) {
+    constructor(stats: ItemStat[] | ChampStat[]) {
+        const isChamp = typeof stats[0] === typeof ChampStat
         const allStats: Array<Stat> | undefined = openCache.get('stats')
         if (!allStats) {
             throw new Error('couldnt get stats')
@@ -107,9 +107,7 @@ export class ItemStats {
                 flat: stat.flat,
                 percent: stat.percent,
                 perLevel: stat.perLevel,
-                percentPerLevel: stat.percentPerLevel,
-                percentBase: stat.percentBase,
-                percentBonus: stat.percentBonus
+                percentPerLevel: stat.percentPerLevel
             }
             switch (name) {
                 case 'abilityPower':

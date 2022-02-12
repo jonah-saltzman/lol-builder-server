@@ -5,12 +5,14 @@ import {
 	ForeignKey,
 	BelongsTo,
 	PrimaryKey,
+    AutoIncrement,
 } from 'sequelize-typescript'
 import { User } from './User'
 
 @Table
 export class Build extends Model {
 	@PrimaryKey
+	@AutoIncrement
 	@Column
 	buildId: number
 
@@ -41,4 +43,18 @@ export class Build extends Model {
 
 	@Column
 	Item6: number
+
+	@Column
+	name: string
+
+	allItems(): number[] {
+		return [
+			this.Item1,
+			this.Item2,
+			this.Item3,
+			this.Item4,
+			this.Item5,
+			this.Item6,
+		]
+	}
 }
