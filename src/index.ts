@@ -58,6 +58,7 @@ app.get('/champs', (req, res) => {
 app.use('/auth', authRoutes)
 app.use(requireToken)
 app.get('/signout', authRoutes)
+app.get('/changepass', authRoutes)
 app.use('/', buildRouter)
 app.use('/item', itemRouter)
 

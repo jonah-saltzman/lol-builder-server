@@ -157,6 +157,7 @@ export class Stats {
                     break
                 case 'manaRegen':
                     this.manaRegen = mods
+                    break
                 case 'movespeed':
                     this.MS = mods
                     break

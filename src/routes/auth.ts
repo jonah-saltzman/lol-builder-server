@@ -12,6 +12,20 @@ authRouter.get('/signout', async (req, res) => {
     respond(res, null)
 })
 
+authRouter.patch('/changepass', async (req, res) => {
+    try {
+        if (!req.body.oldPass || !req.body.newPass) throw 400
+        if (req.user.changePassword(req.body.oldPass, req.body.newPass)) {
+            return respond(res, {message: 'Password changed successfully', status: 200})
+        } else {
+            throw 401
+        }
+    } catch (e) {
+        if (typeof e === 'number') return respond(res, {status: e})
+        respond(res, null)
+    }
+})
+
 authRouter.use((req, res, next) => {
     if (!req.body || !req.body.email || !req.body.password) {
         return respond(res, {message: 'Missing parameters', status: 401})
@@ -40,7 +54,7 @@ authRouter.post('/signup', async (req, res) => {
 authRouter.post('/signin', async (req, res) => {
     const user = await findUserByEmail(req.email)
     if (!user) {
-        return respond(res, {message: 'User not found', status: 400})
+        return respond(res, {message: 'User not found', status: 404})
     } else {
         if (!user.checkPassword(req.password)) {
             return respond(res, {message: 'Invalid password', status: 401})
