@@ -42,6 +42,7 @@ export class User extends Model {
 	changePassword(oldPass: string, newPass: string): boolean {
 		if (bcrypt.compareSync(oldPass, this.getDataValue('password'))) {
 			this.setDataValue('password', bcrypt.hashSync(newPass, 10))
+            this.save()
 			return true
 		}
 		return false

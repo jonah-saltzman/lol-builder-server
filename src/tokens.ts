@@ -132,6 +132,7 @@ export const requireToken = async(req: Request, res: Response, next: NextFunctio
             return respond(res, {message: 'Invalid token', status: 401})
         }
     } else {
+        console.log('no token')
         return respond(res, {message: 'Missing token', status: 401})
     }
 }

@@ -13,7 +13,10 @@ authRouter.get('/signout', async (req, res) => {
 })
 
 authRouter.patch('/changepass', async (req, res) => {
+    console.log('hit changepass')
     try {
+        console.log('hit changepass')
+        console.log(req.body)
         if (!req.body.oldPass || !req.body.newPass) throw 400
         if (req.user.changePassword(req.body.oldPass, req.body.newPass)) {
             return respond(res, {message: 'Password changed successfully', status: 200})
