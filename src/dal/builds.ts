@@ -1,6 +1,7 @@
 import { Build as dbBuild, ItemInBuild } from "../db/models/Build"
 import { Item, getItemsInBuild, addItemsToBuild, replaceItemsInBuild } from "./items"
 import { Champ } from "./champ"
+import { BuildObject } from "../interfaces"
 
 interface SearchOptions {
     raw: boolean
@@ -114,6 +115,20 @@ export class Build {
             console.error(e)
             return false
         }
+    }
+    toObject(): BuildObject {
+        return ({
+            buildName: this.name,
+            buildId: this.buildId,
+            champId: this.champ.id,
+            champStats: this.champ.statsArray(),
+            items: this.items.map(item => ({
+                itemId: item.id,
+                from: item.from,
+                into: item.into,
+                stats: item.statsArray()
+            }))
+        })
     }
 }
 

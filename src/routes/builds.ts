@@ -9,7 +9,13 @@ const buildRouter = express.Router()
 
 buildRouter.get('/', async (req, res) => {
     const builds = await findBuilds(req.user.id, { raw: true })
-    respond(res, {data: builds, status: builds.length === 0 ? 404 : 200})
+    console.log(builds)
+    const response = builds.map(build => build.toObject())
+    if (response.length === 0) {
+        return respond(res, {status: 404})
+    } else {
+        return respond(res, {data: response, status: 200})
+    }
 })
 
 buildRouter.post('/new', async (req, res) => {
@@ -28,7 +34,7 @@ buildRouter.post('/new', async (req, res) => {
                 const items = (await Promise.all(itemIds.map(id => Item.find(id)))).filter(itemFilter)
                 const newBuild = await Build.create({items, champ, user: req.user.id, name: buildName})
                 if (newBuild) {
-                    respond(res, {data: [newBuild], status: 200})
+                    respond(res, {data: [newBuild.toObject()], status: 200})
                     return
                 } else {
                     respond(res, null)
@@ -42,17 +48,22 @@ buildRouter.post('/new', async (req, res) => {
     }
 })
 
-buildRouter.patch('/:buildId', async (req, res) => {
+// req.body.buildId
+// req.body.champId
+// req.body.items
+// req.body.buildName
+
+buildRouter.patch('/', async (req, res) => {
     try {
-        if (!req.params.buildId || req.params.buildId.length === 0) throw 400
+        if (!req.body.buildId || req.body.buildId.length === 0) throw 400
         const champId: number = req.body.champId
         const itemIds: number[] = req.body.items
         if (!champId || !itemIds) throw 400
         const buildName: string = req.body.buildName ?? null
-        const build = await Build.fromId(parseInt(req.params.buildId))
+        const build = await Build.fromId(parseInt(req.body.buildId))
         const champ = await Champ.find(champId)
         const items = (await Promise.all(itemIds.map(id => Item.find(id)))).filter(itemFilter)
-        console.log(`build ${req.params.buildId} belongs to user ${build?.user}`)
+        console.log(`build ${req.body.buildId} belongs to user ${build?.user}`)
         console.log(`the authenticated user is ${req.user.id}`)
         if (!build || !champ || items.length !== itemIds.length) throw 500
         if (build.user !== req.user.id) throw 401
@@ -60,7 +71,7 @@ buildRouter.patch('/:buildId', async (req, res) => {
         build.champ = champ
         build.items = items
         if (await build.update()) {
-            respond(res, {status: 200, data: [build]})
+            respond(res, {status: 200, data: [build.toObject()]})
         } else {
             throw 500
         }
@@ -73,10 +84,10 @@ buildRouter.patch('/:buildId', async (req, res) => {
     }
 })
 
-buildRouter.delete('/:buildId', async (req, res) => {
+buildRouter.delete('/', async (req, res) => {
     try {
-        if (!req.params.buildId || req.params.buildId.length === 0) throw 400
-        const build = await Build.fromId(parseInt(req.params.buildId))
+        if (!req.body.buildId || req.body.length === 0) throw 400
+        const build = await Build.fromId(parseInt(req.body.buildId))
         if (!build) throw 404
         if (build.user !== req.user.id) throw 401
         if (await build.destroy()) {

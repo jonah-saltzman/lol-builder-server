@@ -1,13 +1,12 @@
 import { Champ as dbChamp, ChampStat } from "../db/models/Champ";
-import { Stats } from "../interfaces";
+import { Mods, Stats } from "../interfaces";
 import { champCache } from "../db/config";
 
 export class Champ extends Stats {
 	id: number
 	name: string
-	from: number[]
-	into: number[]
 	dbObj: dbChamp
+    stats: ChampStat[]
 	constructor(
 		name: string,
 		id: number,
@@ -18,6 +17,7 @@ export class Champ extends Stats {
 		this.name = name
 		this.id = id
 		this.dbObj = dbItem
+        this.stats = stats
 	}
 	public static async find(id: string): Promise<Champ | null>
 	public static async find(id: number): Promise<Champ | null>
@@ -41,4 +41,12 @@ export class Champ extends Stats {
             return newChamp
 		}
 	}
+    statsArray() {
+        // const entries = {...this}
+        // return Object.entries(entries).map(([name, mods]) => ({
+        //     statName: name,
+        //     mods: mods as Mods
+        // })).filter(obj => !(obj.statName in ['id', 'name', 'dbObj', 'stats']))
+        return this.stats
+    }
 }

@@ -3,36 +3,63 @@ import { ItemStat } from "../db/models/Stat";
 import { Stats } from '../interfaces'
 import { ItemInBuild } from "../db/models/Build";
 import { itemCache } from "../db/config";
+import { Mods } from "../interfaces";
 
 export class Item extends Stats {
 	id: number
 	name: string
-    from: number[]
-    into: number[]
-    dbObj: dbItem
-	constructor(name: string, id: number, stats: ItemStat[], from: number[], into: number[], dbItem: dbItem) {
+	from: number[]
+	into: number[]
+	dbObj: dbItem
+    stats: ItemStat[]
+    icon: string
+	constructor(
+		name: string,
+		id: number,
+		stats: ItemStat[],
+		from: number[],
+		into: number[],
+		dbItem: dbItem,
+        icon: string
+	) {
 		super(stats)
 		this.name = name
 		this.id = id
-        this.from = from
-        this.into = into
-        this.dbObj = dbItem
+		this.from = from
+		this.into = into
+		this.dbObj = dbItem
+        this.stats = stats
+        this.icon = icon
 	}
 	public static async find(id: string): Promise<Item | null>
 	public static async find(id: number): Promise<Item | null>
 	public static async find(id: string | number): Promise<Item | null> {
-        const item =
-					typeof id === 'string'
-						? await dbItem.findOne({ where: { name: id } })
-						: await dbItem.findByPk(id)
-        if (!item) {
-            return null
-        } else {
-            const dbStats = await ItemStat.findAll({where: {itemId: item.itemId}})
-            const into = (await ItemInto.findAll({where: {fromItem: item.itemId}})).map(into => into.intoItem)
-            const from = (await ItemInto.findAll({where: {intoItem: item.itemId}})).map(into => into.fromItem)
-            return new this(item.itemName, item.itemId, dbStats, from, into, item)
-        }
+		const item =
+			typeof id === 'string'
+				? await dbItem.findOne({ where: { name: id } })
+				: await dbItem.findByPk(id)
+		if (!item) {
+			return null
+		} else {
+			const dbStats = await ItemStat.findAll({ where: { itemId: item.itemId } })
+			const into = (
+				await ItemInto.findAll({ where: { fromItem: item.itemId } })
+			).map((into) => into.intoItem)
+			const from = (
+				await ItemInto.findAll({ where: { intoItem: item.itemId } })
+			).map((into) => into.fromItem)
+			return new this(item.itemName, item.itemId, dbStats, from, into, item, item.icon)
+		}
+	}
+	statsArray() {
+		// const entries = { ...this }
+		// return Object.entries(entries)
+		// 	.map(([name, mods]) => ({
+		// 		statName: name,
+		// 		mods: mods as Mods,
+		// 	}))
+		// 	.filter((obj) => !(obj.statName in ['id', 'name', 'from', 'into', 'dbObj']))
+        return this.stats
 	}
 }
 

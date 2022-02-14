@@ -116,6 +116,9 @@ export class InvalidTokenError extends Error {
 export const requireToken = async(req: Request, res: Response, next: NextFunction) => {
     const tokenString = req.header('JWT')
     if (tokenString) {
+        console.log('got token:')
+        console.log('request: ', req.url)
+        console.log(req.headers)
         const [user, token] = await Token.validate(tokenString)
         if (user && token) {
             if (!token.valid) {
@@ -132,7 +135,9 @@ export const requireToken = async(req: Request, res: Response, next: NextFunctio
             return respond(res, {message: 'Invalid token', status: 401})
         }
     } else {
-        console.log('no token')
+        console.log('no token:')
+        console.log('request: ', req.url)
+        console.log(req.headers)
         return respond(res, {message: 'Missing token', status: 401})
     }
 }

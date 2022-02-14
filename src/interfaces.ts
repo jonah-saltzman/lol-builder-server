@@ -5,6 +5,21 @@ import { Stat } from "./db/models/Stat"
 import { Item } from "./dal/items"
 import { ChampStat } from "./db/models/Champ"
 
+export type ItemObject = {
+    itemId: number,
+    from: number[],
+    into: number[],
+    stats: ItemStat[]
+}
+
+export interface BuildObject {
+    buildName?: string
+    buildId: number
+    champId: number
+    champStats: ChampStat[]
+    items: ItemObject[]
+}
+
 export interface SignupResponse {
 	email: string
 }
@@ -16,7 +31,7 @@ export interface TokenResponse {
 export interface ApiResponse {
 	status: number
 	message?: string
-	data?: SignupResponse | TokenResponse | Build[] | Item[]
+	data?: SignupResponse | TokenResponse | Item[] | BuildObject[]
 	redirect?: string
 }
 
@@ -31,7 +46,7 @@ export enum Modifiers {
 	PPL = 'percentPerLevel',
 }
 
-type Mods = {[key in Modifiers]: number}
+export type Mods = {[key in Modifiers]: number}
 
 
 enum statName {

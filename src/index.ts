@@ -16,6 +16,7 @@ import { Champ } from './db/models/Champ'
 import buildRouter from './routes/builds'
 import { Stat } from './db/models/Stat'
 import itemRouter from './routes/items'
+import champRouter from './routes/champs'
 //import { SocketInit } from './socket.io'
 const PORT = parseInt(process.env.PORT || '6000') as number
 
@@ -56,11 +57,12 @@ app.get('/champs', (req, res) => {
 })
 
 app.use('/auth', authRoutes)
+app.use('/item', itemRouter)
+app.use('/champ', champRouter)
 app.use(requireToken)
 app.get('/signout', authRoutes)
 app.patch('/changepass', authRoutes)
 app.use('/', buildRouter)
-app.use('/item', itemRouter)
 
 mySQL
 	.sync()
