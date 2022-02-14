@@ -31,7 +31,6 @@ const socket_io_1 = require("socket.io");
 const config_1 = __importStar(require("./db/config"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
-require("./custom.ts");
 const auth_1 = __importDefault(require("./routes/auth"));
 const tokens_1 = require("./tokens");
 const updater_1 = __importDefault(require("./updater"));
